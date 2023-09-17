@@ -31,14 +31,9 @@ struct GetMessagesRequest: APIRequest {
         )
     }
 
-    private let dateFormatter: ISO8601DateFormatter = {
-        let dateFormatter = ISO8601DateFormatter()
-        dateFormatter.formatOptions = [
-            .withInternetDateTime,
-            .withFractionalSeconds
-        ]
-        return dateFormatter
-    }()
+    private var dateFormatter: ISO8601DateFormatter {
+        return MessagingAPIDateFormatter()
+    }
 
     var queryItemsParameterDateFormatter: ISO8601DateFormatter {
         return dateFormatter

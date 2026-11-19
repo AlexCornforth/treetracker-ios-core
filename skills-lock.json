@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "skills": {
+    "core-data-expert": {
+      "source": "AvdLee/Core-Data-Agent-Skill",
+      "commit": "855ca7d0df50e82b00c12881dd9cd23c19ef5f49",
+      "sourceType": "github",
+      "skillPath": "core-data-expert/SKILL.md",
+      "computedHash": "aa479b69e7ef6bf4ec453c4679c54897e72b66bdc2b62c61b46fdebf3c33d67a"
+    },
+    "swift-concurrency": {
+      "source": "AvdLee/Swift-Concurrency-Agent-Skill",
+      "commit": "3b1580d8398e0b5408b3bf0bada0e941a1cfc642",
+      "sourceType": "github",
+      "skillPath": "skills/swift-concurrency/SKILL.md",
+      "computedHash": "7977e699ad9eae2cccdb8de7520b5fb7701ed01a6bde52d47263bc30dec09482"
+    }
+  }
+}

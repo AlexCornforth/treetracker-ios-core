@@ -5,5 +5,35 @@
     Treetracker-Core:
       type: framework
       platform: iOS
-      deploymentTarget: "11.0"
-      sources: treetracker-core
+      deploymentTarget: "13.0"
+      sources:
+        - treetracker-core
+        # Holds TreeTracker.xcdatamodeld. XcodeGen compiles versioned models and reads .xccurrentversion.
+        - Resources
+      settings:
+        base:
+          SWIFT_STRICT_CONCURRENCY: targeted
+    Treetracker-CoreTests:
+      type: bundle.unit-test
+      platform: iOS
+      deploymentTarget: "13.0"
+      sources:
+        - Tests
+      dependencies:
+        - target: Treetracker-Core
+      settings:
+        base:
+          SWIFT_STRICT_CONCURRENCY: targeted
+  schemes:
+    Treetracker-Core:
+      build:
+        targets:
+          Treetracker-Core: all
+          Treetracker-CoreTests: [test]
+      test:
+        targets:
+          - Treetracker-CoreTests
+        gatherCoverageData: true
+        commandLineArguments:
+          "-com.apple.CoreData.ConcurrencyDebug 1": true
+          "-com.apple.CoreData.MigrationDebug 1": true

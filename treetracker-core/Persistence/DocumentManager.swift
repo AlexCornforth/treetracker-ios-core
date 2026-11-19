@@ -51,7 +51,9 @@ class DocumentManager: DocumentManaging {
 
     func fileExists(withFileName fileName: String) throws -> Bool {
         let fileURL = try documentsDirectoryPath(forFileName: fileName)
-        return fileManager.fileExists(atPath: fileURL.absoluteString)
+        // `path`, not `absoluteString`: a file:// URL string never exists as a path, so this
+        // used to always return false and uploaded photos were never deleted.
+        return fileManager.fileExists(atPath: fileURL.path)
     }
 }
 

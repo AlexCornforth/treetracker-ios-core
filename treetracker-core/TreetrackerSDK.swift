@@ -59,12 +59,42 @@ public class TreetrackerSDK: NSObject {
     }
 
     public lazy var uploadManager: UploadManaging = {
-        return UploadManager(
-            treeUploadService: self.treeUploadService,
-            planterUploadService: self.planterUploadService,
-            locationDataUploadService: self.locationDataUploadService
-        )
+        switch self.configuration.uploadFormat {
+        case .v1:
+            return UploadManager(
+                treeUploadService: self.treeUploadService,
+                planterUploadService: self.planterUploadService,
+                locationDataUploadService: self.locationDataUploadService
+            )
+        case .v2:
+            return AsyncUploadManager(keepAlive: ApplicationUploadKeepAlive()) { [unowned self] currentPlanterIdentifier, onProgress in
+                V2UploadPipeline(
+                    environment: self.makeV2UploadEnvironment(),
+                    currentPlanterIdentifier: currentPlanterIdentifier,
+                    onProgress: onProgress
+                )
+            }
+        }
     }()
+
+    private var deviceConfigurationService: DeviceConfigurationProviding {
+        return DeviceConfigurationService(coreDataManager: self.coreDataManager)
+    }
+
+    @MainActor
+    private func makeV2UploadEnvironment() -> V2UploadEnvironment {
+        let s3Uploader = AWSS3AsyncUploader(configuration: self.configuration.awsConfiguration)
+        return V2UploadEnvironment(
+            coreDataManager: self.coreDataManager,
+            documentManager: self.documentManager,
+            bundleUploader: s3Uploader,
+            imageUploader: s3Uploader,
+            imageReader: DocumentsImageReader(),
+            deviceConfigurationService: self.deviceConfigurationService,
+            deviceInfoProvider: DeviceInfoProvider(),
+            configuration: .default
+        )
+    }
 
     // Persistence
     private lazy var coreDataManager: CoreDataManaging = {
@@ -127,7 +157,8 @@ public class TreetrackerSDK: NSObject {
     public var selfieService: SelfieService {
         return LocalSelfieService(
             coreDataManager: self.coreDataManager,
-            documentManager: self.documentManager
+            documentManager: self.documentManager,
+            deviceConfigurationProvider: self.deviceConfigurationService
         )
     }
     public var locationService: LocationProvider {
@@ -198,17 +229,33 @@ public extension TreetrackerSDK {
         let terms: URL
         let defaultTreeImageQuality: DefaultTreeImageQuality
         let rootURL: URL
+        let uploadFormat: UploadFormat
 
         public init(
             awsConfiguration: AWSConfiguration,
             terms: URL,
             defaultTreeImageQuality: DefaultTreeImageQuality,
-            rootURL: URL
+            rootURL: URL,
+            uploadFormat: UploadFormat = .v2
         ) {
             self.awsConfiguration = awsConfiguration
             self.terms = terms
             self.defaultTreeImageQuality = defaultTreeImageQuality
             self.rootURL = rootURL
+            self.uploadFormat = uploadFormat
         }
+    }
+}
+
+// MARK: - Upload format
+public extension TreetrackerSDK {
+
+    /// Which upload pack format the SDK sends.
+    enum UploadFormat {
+        /// The original bundles (`trees`, `registrations`, `devices`), using the Operation-based uploader.
+        case v1
+        /// The v2 pack used by Android (`device_configurations`, `wallet_registrations`,
+        /// `sessions`, `captures`, `tracks`), using the async uploader.
+        case v2
     }
 }

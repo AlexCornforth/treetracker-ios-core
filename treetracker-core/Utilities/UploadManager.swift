@@ -12,6 +12,12 @@ public protocol UploadManagerDelegate: AnyObject {
     func uploadManagerDidStartUploadingTrees(_ uploadManager: UploadManaging)
     func uploadManagerDidStopUploadingTrees(_ uploadManager: UploadManaging)
     func uploadManager(_ uploadManager: UploadManaging, didError error: Error)
+    /// Reported by the v2 uploader after every batch of trees. Optional: the default does nothing.
+    func uploadManager(_ uploadManager: UploadManaging, didUpdateProgress progress: UploadProgress)
+}
+
+public extension UploadManagerDelegate {
+    func uploadManager(_ uploadManager: UploadManaging, didUpdateProgress progress: UploadProgress) {}
 }
 
 public protocol UploadManaging: AnyObject {

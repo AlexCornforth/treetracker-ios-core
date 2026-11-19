@@ -19,6 +19,7 @@ class AWSS3Client {
 
     enum AWSS3ClientError: Error {
         case jsonEncodingError
+        case requestCreationFailed
     }
 
     private lazy var s3Client: AWSS3 = {
@@ -27,6 +28,7 @@ class AWSS3Client {
 
     func registerS3CLient() {
         AWSS3.register(with: serviceConfiguration, forKey: Constants.s3ServiceKey)
+        AWSS3Registration.markRegistered()
     }
 
     func uploadImage(imageData: Data, uuid: String, latitude: Double, logitude: Double, completion: @escaping (Result<String, Error>) -> Void) {
@@ -72,6 +74,9 @@ private extension AWSS3Client {
     func put(data: Data, bucketName: String, key: String, acl: AWSS3ObjectCannedACL?, completion: @escaping (Result<String, Error>) -> Void) {
 
         guard let request = AWSS3PutObjectRequest() else {
+            // Previously this returned without calling completion, which left the
+            // v1 upload operation blocked on its semaphore forever.
+            completion(.failure(AWSS3ClientError.requestCreationFailed))
             return
         }
 
@@ -97,7 +102,7 @@ private extension AWSS3Client {
 }
 
 // MARK: - Constants
-private extension AWSS3Client {
+extension AWSS3Client {
     struct Constants {
         static let s3ServiceKey: String = "treetracker-s3-service"
     }

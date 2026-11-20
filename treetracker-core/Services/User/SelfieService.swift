@@ -42,10 +42,16 @@ class LocalSelfieService: SelfieService {
 
     private let coreDataManager: CoreDataManaging
     private let documentManager: DocumentManaging
+    private let deviceConfigurationProvider: DeviceConfigurationProviding
 
-    init(coreDataManager: CoreDataManaging, documentManager: DocumentManaging) {
+    init(
+        coreDataManager: CoreDataManaging,
+        documentManager: DocumentManaging,
+        deviceConfigurationProvider: DeviceConfigurationProviding
+    ) {
         self.coreDataManager = coreDataManager
         self.documentManager = documentManager
+        self.deviceConfigurationProvider = deviceConfigurationProvider
     }
 
     func storeSelfie(selfieData data: SelfieData, forPlanter planter: Planter, completion: (Result<Planter, Error>) -> Void) {
@@ -68,6 +74,8 @@ class LocalSelfieService: SelfieService {
         identification.uuid = uuid
         identification.latitude = data.latitude
         identification.longitude = data.longitude
+        // Each check-in is a v2 session, which records the device configuration it ran on.
+        identification.deviceConfiguration = deviceConfigurationProvider.currentDeviceConfiguration()
 
         planter.addToIdentification(identification)
 

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="2">
+    <entity name="DeviceConfiguration" representedClassName="DeviceConfiguration" syncable="YES" codeGenerationType="class">
+        <attribute name="appBuild" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="appVersion" optional="YES" attributeType="String"/>
+        <attribute name="bundleId" optional="YES" attributeType="String"/>
+        <attribute name="loggedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="osVersion" optional="YES" attributeType="String"/>
+        <attribute name="sdkVersion" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="uploaded" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="uuid" optional="YES" attributeType="String"/>
+        <relationship name="sessions" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PlanterIdentification" inverseName="deviceConfiguration" inverseEntity="PlanterIdentification"/>
+    </entity>
+    <entity name="LocationDataEntity" representedClassName="LocationDataEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="accuracy" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="capturedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="convergenceStatus" optional="YES" attributeType="String"/>
+        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="planterCheckInId" optional="YES" attributeType="String"/>
+        <attribute name="treeUUID" optional="YES" attributeType="String"/>
+        <attribute name="uploaded" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+    </entity>
+    <entity name="PlanterDetail" representedClassName="PlanterDetail" syncable="YES" codeGenerationType="class">
+        <attribute name="acceptedTerms" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="email" optional="YES" attributeType="String"/>
+        <attribute name="firstName" optional="YES" attributeType="String"/>
+        <attribute name="identifier" optional="YES" attributeType="String"/>
+        <attribute name="lastLoggedIn" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="lastName" optional="YES" attributeType="String"/>
+        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="organization" optional="YES" attributeType="String"/>
+        <attribute name="phoneNumber" optional="YES" attributeType="String"/>
+        <attribute name="uploaded" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="uuid" optional="YES" attributeType="String"/>
+        <attribute name="walletRegistrationBundleId" optional="YES" attributeType="String"/>
+        <attribute name="walletRegistrationUploaded" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <relationship name="identification" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PlanterIdentification" inverseName="planter" inverseEntity="PlanterIdentification"/>
+    </entity>
+    <entity name="PlanterIdentification" representedClassName="PlanterIdentification" syncable="YES" codeGenerationType="class">
+        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="localPhotoPath" optional="YES" attributeType="String"/>
+        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="photoURL" optional="YES" attributeType="String"/>
+        <attribute name="sessionBundleId" optional="YES" attributeType="String"/>
+        <attribute name="sessionUploaded" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="uuid" optional="YES" attributeType="String"/>
+        <relationship name="deviceConfiguration" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DeviceConfiguration" inverseName="sessions" inverseEntity="DeviceConfiguration"/>
+        <relationship name="planter" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PlanterDetail" inverseName="identification" inverseEntity="PlanterDetail"/>
+        <relationship name="trees" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TreeCapture" inverseName="planterIdentification" inverseEntity="TreeCapture"/>
+    </entity>
+    <entity name="TreeCapture" representedClassName="TreeCapture" syncable="YES" codeGenerationType="class">
+        <attribute name="bundleId" optional="YES" attributeType="String"/>
+        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="horizontalAccuracy" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="localPhotoPath" optional="YES" attributeType="String"/>
+        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="noteContent" optional="YES" attributeType="String"/>
+        <attribute name="photoURL" optional="YES" attributeType="String"/>
+        <attribute name="uploaded" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="uuid" optional="YES" attributeType="String"/>
+        <relationship name="planterIdentification" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PlanterIdentification" inverseName="trees" inverseEntity="PlanterIdentification"/>
+    </entity>
+    <elements>
+        <element name="DeviceConfiguration" positionX="-540" positionY="-180" width="128" height="164"/>
+        <element name="LocationDataEntity" positionX="-342" positionY="-297" width="128" height="149"/>
+        <element name="PlanterDetail" positionX="-546.234375" positionY="-437.171875" width="128" height="253"/>
+        <element name="PlanterIdentification" positionX="-331.33203125" positionY="-319.94921875" width="128" height="178"/>
+        <element name="TreeCapture" positionX="-132.37890625" positionY="-338.75" width="128" height="208"/>
+    </elements>
+</model>

@@ -54,4 +54,30 @@ extension CoreDataManaging {
         }
         return container
     }
+
+    /// Creates a container with lightweight migration switched on explicitly.
+    ///
+    /// The TreeTracker model has more than one version. Existing stores are migrated in place
+    /// on first launch with an inferred mapping model, which requires every model change to be
+    /// additive (new optional attributes, entities and relationships).
+    func makePersistentContainer(
+        name: String,
+        model: NSManagedObjectModel,
+        storeDescription: NSPersistentStoreDescription?
+    ) -> NSPersistentContainer {
+        let container = NSPersistentContainer(name: name, managedObjectModel: model)
+        if let storeDescription = storeDescription {
+            container.persistentStoreDescriptions = [storeDescription]
+        }
+        container.persistentStoreDescriptions.forEach { description in
+            description.shouldMigrateStoreAutomatically = true
+            description.shouldInferMappingModelAutomatically = true
+        }
+        container.loadPersistentStores { _, error in
+            if let error = error {
+                fatalError("Unable to load persistent stores: \(error)")
+            }
+        }
+        return container
+    }
 }
